@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Заполните профиль</title>
+    <link rel="stylesheet" href="/static/css/makeprofile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <img src="/static/icons/torch.png" class="side-img left-img">
+        <form method="POST" action="/makeprofile/{{ user.username }}" enctype="multipart/form-data">
+            <input type="text" name="last_name" placeholder="Фамилия" required>
+            <input type="text" name="first_name" placeholder="Имя" required>
+            <input type="text" name="middle_name" placeholder="Отчество" required>
+            <input type="number" name="age" placeholder="Возраст" required>
+            <label>Пол:</label>
+            <input type="radio" name="gender" value="Мужской" required> Мужской
+            <input type="radio" name="gender" value="Женский" required> Женский<br><br>
+
+            <label>Основные грехи:</label>
+            <input type="checkbox" name="sins" value="Гордыня"> Гордыня
+            <input type="checkbox" name="sins" value="Жадность"> Жадность
+            <input type="checkbox" name="sins" value="Гнев"> Гнев
+            <input type="checkbox" name="sins" value="Зависть"> Зависть
+            <input type="checkbox" name="sins" value="Похоть"> Похоть
+            <input type="checkbox" name="sins" value="Черевоугодие"> Черевоугодие
+            <input type="checkbox" name="sins" value="Уныние"> Уныние <br><br>
+
+            <label>Фото профиля:</label>
+            <input type="file" name="profile_photo" accept="image/*" required>
+
+            <button type="submit">Сохранить</button>
+            <button onclick="window.location.href='/'">Назад</button>
+        </form>
+        <img src="/static/icons/torch.png" class="side-img right-img">
+    </div>
+</body>
+</html>

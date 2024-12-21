@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Добро пожаловать в ад, {{ user.role }}!</h2>
+        
+        <div class="profile-photo-container">
+            <a href="{{ url_for('profile', username=user.username) }}">
+                {% if photo_base64 %}
+                    <img src="data:image/png;base64,{{ photo_base64 }}" alt="Profile Photo" class="profile-photo">
+                {% else %}
+                    <p>Фото профиля отсутствует</p>
+                {% endif %}
+            </a>
+        </div>
+
+        <div class="username">
+            {{ user.username }}
+        </div><br>
+
+        {% if 'старший демон' in user.role or 'Босс' in user.role %}
+            <a href="{{ url_for('admin_panel') }}" class="btn admin-btn">Администраторская панель</a>
+        {% endif %}
+
+        <div class="courses-container">
+            <h3>Ваши курсы:</h3>
+            <div class="courses">
+                {% for course in courses.items %}
+                    <div class="course-card">
+                        <h3>{{ course.title }}</h3>
+                        <p>{{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}</p>
+                        <p>Ответственный демон: {{ course.demon_name }}</p>
+                        <br>
+                        <a href="{{ url_for('course_page', course_id=course.id) }}" class="btn">Войти в курс</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if courses.has_prev %}
+                    <a href="{{ url_for('index', page=courses.prev_num) }}">« Предыдущая</a>
+                {% endif %}
+                
+                <span>Страница {{ courses.page }} из {{ courses.pages }}</span>
+                
+                {% if courses.has_next %}
+                    <a href="{{ url_for('index', page=courses.next_num) }}">Следующая »</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+body {
+    background-color: #1C1C1C;
+    color: #FF6600;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+}
+
+span {
+    color: #FF6600;
+}
+
+a {
+    color: #FF6600;
+}
+
+h1, h2 {
+    color: #FF6600;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 30px;
+    margin: 20px;
+}
+
+button {
+    background-color: #FF6600;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #FF4500;
+}
+
+input {
+    background-color: #2F4F4F;
+    color: #FF6600;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 80%;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+input:focus {
+    background-color: #3A5F5F;
+    outline: none;
+}
+
+i {
+    color: red;
+    font-size: 1em;
+}
+
+form {
+    background-color: #292828cb;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+form input {
+    width: 100%;
+}
+
+form button {
+    background-color: #FF6600;
+    width: 100%;
+}
+
+form button:hover {
+    background-color: #FF4500;
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #000;
+    cursor: pointer;
+}
+
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.course-card {
+    display: inline-block;
+    width: 250px;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #31313179;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.course-card h3 {
+    font-size: 25px;
+    margin: 10px 0;
+    color: #ff6600;
+}
+
+.course-card p {
+    font-size: 14px;
+    font-style: italic;
+    color: #ff66008e;
+    margin-bottom: 10px;
+}
+
+.course-card .btn {
+    padding: 10px 20px;
+    background-color: #FF6600;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.course-card .btn:hover {
+    background-color: #FF4500;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination a {
+    padding: 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color: #FF4500;
+    color: white;
+}
+
+.admin-btn {
+    background-color: #FF6600;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.admin-btn:hover {
+    background-color: #FF4500;
+}

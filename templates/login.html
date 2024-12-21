@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+    <h2>Вход</h2>
+    <form method="POST" action="/login">
+        <input type="text" name="username" placeholder="Логин" required><br><br>
+        <input type="password" name="password" placeholder="Пароль" required><br><br>
+        <button type="submit">Войти</button>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <i style="color: red;">{{ message }}</i>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </form>
+
+    <button onclick="window.location.href='/'">Назад</button>
+</body>
+</html>

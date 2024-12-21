@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления демонов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/adminpane.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Добро пожаловать, {{ user.first_name }}!</h1>
+        <button onclick="window.location.href='/index'">Назад</button><br>
+
+
+        <h2>Список ваших грешников</h2>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <input type="text" id="searchByFirstName" class="form-control" placeholder="Поиск по имени">
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchByLastName" class="form-control" placeholder="Поиск по фамилии">
+            </div>
+        </div>
+        <div class="d-flex justify-content-center my-3">
+            <button class="btn btn-primary btn-lg" id="searchButton">Поиск</button>
+        </div>
+        
+        <div class="modal fade" id="searchResultsModal" tabindex="-1" aria-labelledby="searchResultsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="searchResultsModalLabel">Результаты поиска</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="searchResultsContainer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            document.getElementById('searchButton').addEventListener('click', function () {
+                const firstName = document.getElementById('searchByFirstName').value.toLowerCase();
+                const lastName = document.getElementById('searchByLastName').value.toLowerCase();
+                const rows = document.querySelectorAll('table tbody tr');
+                const results = [];
+        
+                rows.forEach(row => {
+                    const firstNameCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                    const lastNameCell = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+        
+                    if (
+                        (!firstName || firstNameCell.includes(firstName)) &&
+                        (!lastName || lastNameCell.includes(lastName))
+                    ) {
+                        results.push(row.innerHTML);
+                    }
+                });
+        
+                const resultsContainer = document.getElementById('searchResultsContainer');
+                if (results.length > 0) {
+                    resultsContainer.innerHTML = `
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Логин</th>
+                                    <th>Имя</th>
+                                    <th>Фамилия</th>
+                                    <th>Отчество</th>
+                                    <th>Возраст</th>
+                                    <th>Пол</th>
+                                    <th>Дата регистрации</th>
+                                    <th>Грехи</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${results.map(result => `<tr>${result}</tr>`).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    resultsContainer.innerHTML = '<p class="text-danger">Результаты не найдены.</p>';
+                }
+        
+                const modal = new bootstrap.Modal(document.getElementById('searchResultsModal'));
+                modal.show();
+            });
+        </script>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Возраст</th>
+                        <th>Пол</th>
+                        <th>Дата регистрации</th>
+                        <th>Грехи</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sinner in sinners %}
+                    <tr>
+                        <td>{{ sinner.id }}</td>
+                        <td>{{ sinner.username }}</td>
+                        <td>{{ sinner.first_name or '—' }}</td>
+                        <td>{{ sinner.last_name or '—' }}</td>
+                        <td>{{ sinner.middle_name or '—' }}</td>
+                        <td>{{ sinner.age or '—' }}</td>
+                        <td>{{ sinner.gender or '—' }}</td>
+                        <td>{{ sinner.registration_date }}</td>
+                        <td>
+                            {% if sinner.sins %}
+                                {% set sins_list = sinner.sins | json_decode %}
+                                {{ sins_list | join(", ") }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('delete_sinner', sinner_id=sinner.id) }}" class="btn btn-danger">Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if user.username == 'Devil' %}
+        <h2>Список всех демонов</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин</th>
+                        <th>Имя</th>
+                        <th>Грех</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for demon in demons %}
+                    <tr>
+                        <td>{{ demon.id }}</td>
+                        <td>{{ demon.username }}</td>
+                        <td>{{ demon.first_name or '—' }}</td>
+                        <td>{{ demon.sin or '—' }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_demon', demon_id=demon.id) }}" class="btn btn-danger">Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+<div class="container mt-4">
+    <h2>Ваши курсы</h2>
+    <div class="row">
+        <div class="col-4">
+            <button class="btn btn-success" id="createCourseBtn">Создать курс</button>
+        </div>
+    </div>
+
+    <div id="createCourseForm" class="mt-3" style="display: none;">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Введите данные для курса</h5>
+                <form method="POST" action="{{ url_for('create_course') }}">
+                    <div class="mb-3">
+                        <label for="courseTitle" class="form-label">Название курса</label>
+                        <input type="text" class="form-control" id="courseTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="courseDescription" class="form-label">Описание курса</label>
+                        <textarea class="form-control" id="courseDescription" name="description" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-secondary" id="sortAlphabetAsc">Сортировать по алфавиту (A-Z)</button>
+    <button class="btn btn-secondary" id="sortAlphabetDesc">Сортировать по алфавиту (Z-A)</button>
+
+    <script>
+        document.getElementById('sortAlphabetAsc').addEventListener('click', function() {
+            window.location.href = "{{ url_for('admin_panel') }}?sort=alphabet_asc";
+        });
+    
+        document.getElementById('sortAlphabetDesc').addEventListener('click', function() {
+            window.location.href = "{{ url_for('admin_panel') }}?sort=alphabet_desc";
+        });
+    
+        document.getElementById('sortSinnersAsc').addEventListener('click', function() {
+            window.location.href = "{{ url_for('admin_panel') }}?sort=sinners_asc";
+        });
+    
+        document.getElementById('sortSinnersDesc').addEventListener('click', function() {
+            window.location.href = "{{ url_for('admin_panel') }}?sort=sinners_desc";
+        });
+    </script>
+
+{% for course in courses %}
+{% if user.username == 'Devil' or course.demon_id == user.id %}
+<div class="card mt-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ course.title }}</h5>
+        <p class="card-text">{{ course.description }}</p>
+        <p><strong>Ответственный демон:</strong> {{ course.demon_name }}</p>
+        <p><strong>Дата создания:</strong> {{ course.creation_date }}</p>
+        <p><strong>Количество грешников:</strong> {{ course.sinners | length }}</p>
+
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSinnersModal{{ course.id }}">Добавить грешника</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeSinnersModal{{ course.id }}">Удалить грешника</button>
+
+        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewSinnersModal{{ course.id }}">Список студентов</button>
+
+        <form method="POST" action="{{ url_for('add_all_sinners', course_id=course.id) }}" class="d-inline">
+            <button type="submit" class="btn btn-primary">Добавить всех грешников</button>
+        </form>
+        <form method="POST" action="{{ url_for('delete_course', course_id=course.id) }}" class="ms-auto d-inline">
+            <button type="submit" class="btn btn-danger">Удалить курс</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="addSinnersModal{{ course.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('add_sinner', course_id=course.id) }}">
+      В          <div class="modal-header">
+                    <h5 class="modal-title">Добавить грешника в курс</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-select" name="sinner_id" required>
+                        <option value="" disabled selected>Выберите грешника</option>
+                        {% for sinner in sinners %}
+                            <option value="{{ sinner.id }}">{{ sinner.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-success">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeSinnersModal{{ course.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('remove_sinner', course_id=course.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Удалить грешника из курса</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-select" name="sinner_id" required>
+                        <option value="" disabled selected>Выберите грешника</option>
+                        {% for sinner in course.sinners %}
+                            <option value="{{ sinner.id }}">{{ sinner.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewSinnersModal{{ course.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Список студентов курса</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% if course.sinners %}
+                    <ul class="list-group">
+                        {% for sinner in course.sinners %}
+                            <li class="list-group-item">{{ sinner.username }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Нет студентов, принимающих участие в этом курсе.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endfor %}
+
+<script>
+    document.getElementById('createCourseBtn').addEventListener('click', function() {
+        document.getElementById('createCourseForm').style.display = 'block';
+        document.getElementById('createCourseBtn').style.display = 'none';
+    });
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
